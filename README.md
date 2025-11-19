@@ -84,7 +84,8 @@ lucas-portfolio/
 │   ├── AIAssistant.tsx # AI chatbot
 │   └── ...
 ├── services/           # API integrations
-├── assets/             # Images and static files
+├── public/             # Static assets
+│   └── assets/         # Images and files
 ├── index.html          # Entry HTML
 ├── App.tsx             # Main app component
 └── package.json        # Dependencies
