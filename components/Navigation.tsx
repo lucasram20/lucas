@@ -2,10 +2,49 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SectionId } from '../types';
 
+// Scramble text animation hook
+const useScramble = (text: string, trigger: boolean) => {
+  const [displayText, setDisplayText] = useState(text);
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  useEffect(() => {
+    if (!trigger) {
+      setDisplayText(text);
+      return;
+    }
+
+    let iteration = 0;
+    const interval = setInterval(() => {
+      setDisplayText(
+        text
+          .split("")
+          .map((char, index) => {
+            if (index < iteration) {
+              return text[index];
+            }
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join("")
+      );
+
+      if (iteration >= text.length) {
+        clearInterval(interval);
+      }
+
+      iteration += 1 / 3;
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, [text, trigger]);
+
+  return displayText;
+};
+
 const Navigation: React.FC = () => {
   const [time, setTime] = useState(new Date());
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
@@ -50,18 +89,21 @@ const Navigation: React.FC = () => {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center space-x-12">
-          {navLinks.map((link, index) => (
-            <motion.button
-              key={link.id}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              onClick={() => scrollToSection(link.id)}
-              className="text-xs font-medium text-gray-300 hover:text-[#C9FD74] transition-colors uppercase tracking-widest"
-            >
-              [{link.label}]
-            </motion.button>
-          ))}
+          {navLinks.map((link, index) => {
+            const isHovered = hoveredLink === link.id;
+            
+            return (
+              <NavLink
+                key={link.id}
+                link={link}
+                index={index}
+                isHovered={isHovered}
+                onClick={() => scrollToSection(link.id)}
+                onMouseEnter={() => setHoveredLink(link.id)}
+                onMouseLeave={() => setHoveredLink(null)}
+              />
+            );
+          })}
         </div>
 
         {/* Time & Status */}
@@ -139,6 +181,32 @@ const Navigation: React.FC = () => {
         )}
       </AnimatePresence>
     </nav>
+  );
+};
+
+// NavLink component with scramble effect
+const NavLink: React.FC<{
+  link: { id: string; label: string };
+  index: number;
+  isHovered: boolean;
+  onClick: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+}> = ({ link, index, isHovered, onClick, onMouseEnter, onMouseLeave }) => {
+  const scrambledText = useScramble(link.label, isHovered);
+
+  return (
+    <motion.button
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1 }}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      className="text-xs font-medium text-gray-300 hover:text-[#C9FD74] transition-colors uppercase tracking-widest"
+    >
+      [{scrambledText}]
+    </motion.button>
   );
 };
 

@@ -128,12 +128,6 @@ const Projects: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <div className="text-center mt-16">
-        <a href="#" className="inline-block px-8 py-4 border border-white/20 rounded-full text-white hover:bg-white hover:text-black transition-all duration-300 font-bold uppercase tracking-widest text-sm">
-          View All Archive
-        </a>
-      </div>
     </section>
   );
 };
