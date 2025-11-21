@@ -12,13 +12,6 @@ const Contact: React.FC = () => {
           <h2 className="text-6xl md:text-9xl font-bold text-white tracking-tighter mb-12">
             LET'S WORK<br/><span className="text-outline">TOGETHER</span>
           </h2>
-          
-          <a 
-            href="mailto:lucasemmanuelramirez56@gmail.com" 
-            className="inline-block px-12 py-6 bg-[#C9FD74] text-black font-bold text-lg rounded-full hover:scale-105 transition-transform duration-300 mb-16"
-          >
-            Get in Touch
-          </a>
 
           <div className="flex flex-wrap justify-center gap-8 md:gap-16 text-gray-500">
             <a 
